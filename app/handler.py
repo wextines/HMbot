@@ -8,7 +8,7 @@ from database import CREATE_INSERT, DELETE_TABLE, init_db, close_db
 import time
 from app.answers import fetch_keys
 import app.keyboards as kb
-from config import adminID
+from config import adminDB
 
 router = Router()
 
@@ -33,17 +33,28 @@ async def get_count_keys():
 
 # for teacher 
 @router.message(CommandStart())
-async def cmd_start(message: Message):
-    if message.from_user.id == adminID:
+async def cmd_start(message: Message, state: FSMContext):
+    if message.from_user.id == adminDB:
         await message.reply('Здравствуйте устоз!\nВыберите действие записями 👇', reply_markup=checker)
     else:
         await message.reply('Привет, нажми на /check чтобы проверить дз!  🚀')
-
+    await state.clear()
 @router.callback_query(F.data == 'addData')
 async def addData(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Teacher.adding)
     await callback.message.edit_text('Пришлите новый ключ для записи.. ✍️', reply_markup=kb.addMessage)
 
+@router.callback_query(F.data == 'viewDB')
+async def addData(callback: CallbackQuery):
+    countKeys = await get_count_keys()
+    if countKeys == 0:
+        await callback.message.answer(text='Ключи отсутствуют', reply_markup=kb.onlyAdd)
+    else:
+        allKeys = await fetch_keys()
+        formatted_keys = [f"{i + 1}. {key}" for i, key in enumerate(allKeys)]
+        keys_text = '\n'.join(formatted_keys)
+        await callback.message.answer(text=f'🔑 Ключи в Базе данных: \n\n{keys_text}', reply_markup=checker)
+    callback.answer()
 
 
 @router.message(Teacher.adding)
@@ -60,7 +71,6 @@ async def finishAdding(message: Message, state: FSMContext):
 async def deleteData(callback: CallbackQuery):
     await callback.message.edit_text('Вы действительно хотите удалить ключи? ⚠️', reply_markup=kb.deleteMessage)
 
-
 @router.callback_query(F.data == 'backData')
 async def backData(callback: CallbackQuery, state: FSMContext):
     countKeys = await fetch_keys()  # Получение количество ключей асинхронно
@@ -74,17 +84,13 @@ async def backData(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == 'confirmData')
 async def backData(callback: CallbackQuery, state: FSMContext):
-    await state.set_state(Teacher.deleting)
-    await callback.message.edit_text('Записи удалены! ✅', reply_markup=kb.onlyAdd)
-
-
-@router.message(Teacher.deleting)
-async def finishDeleting(message: Message, state: FSMContext):
     await init_db()
     await DELETE_TABLE()
-    await state.clear()
+    await callback.message.answer('Записи удалены! ✅', reply_markup=kb.onlyAdd)
+    callback.answer()
     await close_db()
-
+    await state.clear()
+    
 
 # for students
 

@@ -2,12 +2,13 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 # tools for teacher
+
 teachBtn = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Посмотреть ключи 🔑', callback_data='viewDB')],
     [InlineKeyboardButton(text='Добавить 🔄', callback_data='addData'), 
      InlineKeyboardButton(text='Удалить ❌', callback_data='deleteData')]
 ])
-    
+
 onlyAdd = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Добавить 🔄', callback_data='addData')]
 ])

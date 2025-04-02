@@ -8,7 +8,7 @@ from database import CREATE_INSERT, DELETE_TABLE, init_db, close_db
 import time
 from app.answers import fetch_keys
 import app.keyboards as kb
-from config import ADMIN_ID
+from config import adminID
 
 router = Router()
 
@@ -34,7 +34,7 @@ async def get_count_keys():
 # for teacher 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    if message.from_user.id == ADMIN_ID:
+    if message.from_user.id == adminID:
         await message.reply('Здравствуйте устоз!\nВыберите действие записями 👇', reply_markup=checker)
     else:
         await message.reply('Привет, нажми на /check чтобы проверить дз!  🚀')

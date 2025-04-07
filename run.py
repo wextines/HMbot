@@ -11,11 +11,10 @@ dp = Dispatcher()
 
 
 async def main():
-    await bot.delete_webhook()
     dp.include_router(router)
     await dp.start_polling(bot)
 
-if name == 'main':
+if __name__ == '__main__':
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

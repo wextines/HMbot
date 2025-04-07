@@ -30,6 +30,7 @@ def testKeyboard(unique_id: str) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text='A', callback_data=f'answer_A_{unique_id}'),
          InlineKeyboardButton(text='B', callback_data=f'answer_B_{unique_id}'),
          InlineKeyboardButton(text='C', callback_data=f'answer_C_{unique_id}'),
-         InlineKeyboardButton(text='D', callback_data=f'answer_D_{unique_id}')]
+         InlineKeyboardButton(text='D', callback_data=f'answer_D_{unique_id}'),
+         InlineKeyboardButton(text='E', callback_data=f'answer_E_{unique_id}')]
     ])
 

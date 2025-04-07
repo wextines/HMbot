@@ -146,10 +146,8 @@ async def process_key(callback: CallbackQuery, state: FSMContext):
     if correct_answer and answer == correct_answer:
         right_answers += 1
         answers.append(f"{step + 1}: {answer} — ✅")  # Совпадает с правильным ответом
-        stiker = '✅'
     else:
         answers.append(f"{step + 1}: {answer} — ❌")
-        stiker = '❌'
 
     step += 1
     await state.update_data(step=step, answers=answers, right_answers=right_answers)
@@ -159,13 +157,13 @@ async def process_key(callback: CallbackQuery, state: FSMContext):
     if step + 1 < countKeys + 1:
         new_unique_id = str(int(time.time() * 1000))  # Новый уникальный ID для следующего вопроса
         await state.update_data(unique_id=new_unique_id)  # Обновляем уникальный ID
-        await callback.message.edit_text(text=f'Вопрос <b>{step}</b>\nВаш ответ: {answer} — {stiker}', parse_mode='html')
+        await callback.message.edit_text(text=f'Вопрос <b>{step}</b>\nВаш ответ: <b>{answer}</b>', parse_mode='html')
         await callback.message.answer(
             f'Ответьте на вопрос <b>{step + 1}</b> ❓',
             reply_markup=kb.testKeyboard(new_unique_id),  # Передаем новый уникальный ID
             parse_mode='html')
     else:
-        await callback.message.edit_text(text=f'Вопрос <b>{step}</b>\nВаш ответ: {answer} — {stiker}', parse_mode='html')
+        await callback.message.edit_text(text=f'Вопрос <b>{step}</b>\nВаш ответ: <b>{answer}</b>', parse_mode='html')
         results = "\n".join(answers)
         await callback.message.answer(f"Тест завершен!\nРезультаты <i>{fullname}</i>:\n\n{results}\n\n{right_answers}/{countKeys}", parse_mode='html')
         await state.clear()

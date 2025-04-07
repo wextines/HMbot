@@ -18,6 +18,7 @@ async def main():
     dp.include_router(router)
     await dp.start_polling(bot)
 
+# Фейковый веб-сервер для Render (чтобы сервис не отключался)
 async def fake_handler(request):
     return web.Response(text="I'm alive!")
 
@@ -29,7 +30,7 @@ async def start_fake_server():
     site = web.TCPSite(runner, "0.0.0.0", int(os.getenv("PORT", 8080)))
     await site.start()
 
-if name == "main":
+if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.create_task(start_fake_server())  
-    loop.run_until_complete(main())  
+    loop.create_task(start_fake_server())  # Запускаем фейковый сервер
+    loop.run_until_complete(main())  # Запускаем бота
